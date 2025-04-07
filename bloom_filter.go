@@ -33,7 +33,7 @@ func (bf *localBloomFilter) Exists(data []byte) (bool, error) {
 		return false, err
 	}
 	for _, offset := range khash {
-		index := offset >> 5
+		index := offset & int32(len(bf.bitmap)-1)
 		bitOffset := offset & 31
 		if bf.bitmap[index]&(1<<bitOffset) == 0 {
 			return false, nil
@@ -52,7 +52,7 @@ func (bf *localBloomFilter) Add(data []byte) error {
 	}
 
 	for _, offset := range khash {
-		index := offset >> 5
+		index := offset & int32(len(bf.bitmap)-1)
 		bitOffset := offset & 31
 		bf.bitmap[index] |= (1 << bitOffset)
 	}
